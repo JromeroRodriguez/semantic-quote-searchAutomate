@@ -9,8 +9,8 @@ graph LR
     A[Consulta del Usuario] --> B[FastAPI]
     B --> C[MiniLM Embeddings]
     C --> D[Índice FAISS]
-    D --> E[Top 30 Candidatos]
-    E --> F[BGE Reranker v2-m3]
+    D --> E[Top 15 Candidatos]
+    E --> F[Cross-Encoder ms-marco-MiniLM-L-6-v2]
     F --> G[Top 3 Frases]
     G --> H[Frontend]
 ```
@@ -31,9 +31,9 @@ Dos procesos separados:
 |-----------|-----------|
 | Backend | Python, FastAPI |
 | Scraping | Playwright |
-| Embeddings | `paraphrase-multilingual-MiniLM-L12-v2` |
+| Embeddings | `sentence-transformers/paraphrase-multilingual-MiniLM-L-12-v2` |
 | Búsqueda Vectorial | FAISS (IndexFlatIP) |
-| Reranker | `BAAI/bge-reranker-v2-m3` |
+| Reranker | `cross-encoder/ms-marco-MiniLM-L-6-v2` |
 | Frontend | CSS editorial personalizado, JavaScript vanilla |
 | Dataset | JSON |
 
@@ -87,7 +87,7 @@ Abrir [http://localhost:8000](http://localhost:8000) en el navegador.
 docker compose up --build
 ```
 
-Abrir [http://localhost:8001](http://localhost:8001).
+Abrir [http://localhost:8002](http://localhost:8002).
 
 ### Ejecutar en segundo plano
 
@@ -107,9 +107,9 @@ docker compose down      # detener
 
 | Variable | Valor por defecto | Descripción |
 |----------|---------|-------------|
-| `EMBEDDING_MODEL` | `paraphrase-multilingual-MiniLM-L12-v2` | Modelo de embeddings |
-| `RERANKER_MODEL` | `BAAI/bge-reranker-v2-m3` | Modelo reranker |
-| `TOP_K` | `30` | Candidatos recuperados de FAISS |
+| `EMBEDDING_MODEL` | `sentence-transformers/paraphrase-multilingual-MiniLM-L-12-v2` | Modelo de embeddings |
+| `RERANKER_MODEL` | `cross-encoder/ms-marco-MiniLM-L-6-v2` | Modelo reranker |
+| `TOP_K` | `15` | Candidatos recuperados de FAISS |
 | `FINAL_RESULTS` | `3` | Resultados finales devueltos |
 | `MAX_QUERY_LENGTH` | `500` | Longitud máxima de la consulta en caracteres |
 | `QUOTES_PATH` | `data/quotes.json` | Ruta al dataset de frases |
