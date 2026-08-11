@@ -6,8 +6,8 @@
   --line: #ded5c6;
   --accent: #b4552c;
   --danger: #a32b21;
-  --display: "Instrument Serif", Georgia, serif;
-  --sans: "Work Sans", system-ui, sans-serif;
+  --display: Georgia, "Times New Roman", serif;
+  --sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
 * { box-sizing: border-box; }
@@ -85,3 +85,25 @@ cite { display: block; margin-top: 1rem; font-style: normal; font-size: 0.68rem;
 footer { position: relative; padding-top: 2rem; padding-bottom: 2rem; font-size: 0.75rem; color: var(--muted); }
 footer::before { content: ""; position: absolute; top: 0; left: 1.5rem; right: 1.5rem; border-top: 1px solid var(--line); }
 .hidden { display: none !important; }
+
+.mode-nav { display: flex; gap: 0.5rem; }
+.mode-tab {
+  background: transparent; border: 1px solid var(--line); color: var(--muted);
+  font-family: var(--sans); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.15em;
+  padding: 0.4rem 0.8rem; cursor: pointer; transition: all 0.2s;
+}
+.mode-tab.active, .mode-tab:hover { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+
+.essay-box {
+  margin-top: 1rem; border: 1px solid var(--line); background: var(--card); padding: 2rem;
+  font-family: var(--display); font-size: 1.5rem; line-height: 1.6; color: var(--ink);
+}
+.essay-box p { margin: 0 0 1.5rem 0; }
+.essay-box p:last-child { margin-bottom: 0; }
+
+#debate-sources-container { list-style: none; margin: 1rem 0 0; padding: 0; }
+#debate-sources-container li {
+  display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 1.25rem;
+  padding: 1.5rem 0; border-top: 1px solid var(--line);
+}
+

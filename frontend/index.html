@@ -1,34 +1,40 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Quote Index — Semantic Quote Search</title>
-<meta name="description" content="Describe a feeling, a situation or a thought and find the quotes that speak to it, ranked by meaning rather than keywords.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Work+Sans:wght@300;400;500;600&display=swap">
+<title>Índice de Citas — Búsqueda Semántica y Orador de Debates</title>
+<meta name="description" content="Describe un sentimiento o haz una pregunta filosófica. Encuentra citas relevantes o genera un ensayo de debate respaldado.">
 <link rel="stylesheet" href="/static/styles/main.css">
 </head>
 <body>
 <header class="bar">
-  <span class="wordmark">Quote Index</span>
-  <span class="eyebrow muted">Semantic search</span>
+  <span class="wordmark">Índice de Citas</span>
+  <nav class="mode-nav">
+    <button id="mode-search-btn" class="mode-tab active">Búsqueda</button>
+    <button id="mode-debate-btn" class="mode-tab">Orador de Debates</button>
+  </nav>
 </header>
 
 <main>
-  <section class="hero rule">
-    <p class="eyebrow accent">Meaning, not keywords</p>
-    <h1>Find the words that fit <em>what you're feeling.</em></h1>
-    <p class="lede">Describe a situation, an emotion or a half-formed thought. The index reads it for sense and returns the passages that come closest.</p>
+  <section class="hero rule" id="hero-search">
+    <p class="eyebrow accent">Significado, no palabras clave</p>
+    <h1>Encuentra las palabras que encajan con <em>lo que sientes.</em></h1>
+    <p class="lede">Describe una situación, una emoción o un pensamiento complejo. El índice analiza el sentido y devuelve los pasajes más cercanos.</p>
+  </section>
+
+  <section class="hero rule hidden" id="hero-debate">
+    <p class="eyebrow accent">Argumentación con respaldo</p>
+    <h1>Debate sobre lo complejo, <em>respaldado por citas.</em></h1>
+    <p class="lede">Haz una pregunta filosófica o compleja. El orador sintetiza un ensayo de dos párrafos estrictamente fundamentado en citas de la base de datos.</p>
   </section>
 
   <section class="panel">
-    <label class="eyebrow muted" for="query-input">Your description</label>
-    <textarea id="query-input" rows="4" placeholder="I keep second-guessing a choice I already made…"></textarea>
+    <label class="eyebrow muted" id="input-label" for="query-input">Tu descripción</label>
+    <textarea id="query-input" rows="4" placeholder="Sigo dudando de una decisión que ya tomé…"></textarea>
     <div class="panel-foot">
-      <span class="hint">Press ⌘ / Ctrl + Enter to search</span>
-      <button id="search-btn" disabled>Find quotes</button>
+      <span class="hint" id="action-hint">Pulsa ⌘ / Ctrl + Enter para buscar</span>
+      <button id="search-btn" disabled>Buscar citas</button>
     </div>
   </section>
 
@@ -43,12 +49,19 @@
     <ol id="results-container"></ol>
   </section>
 
-  <p id="no-results" class="hidden state rule serif-note">Nothing came close enough. Try describing it another way.</p>
+  <section id="debate-results-section" class="hidden">
+    <p class="eyebrow muted">Ensayo de Debate Respaldado</p>
+    <div id="debate-essay-container" class="essay-box"></div>
+    <p class="eyebrow muted" style="margin-top: 2rem;">Fuentes de Respaldo</p>
+    <ol id="debate-sources-container"></ol>
+  </section>
+
+  <p id="no-results" class="hidden state rule serif-note">Ningún pasaje se acercó lo suficiente. Prueba a describirlo de otro modo.</p>
   <p id="error-state" class="hidden state rule serif-note error"><span id="error-message"></span></p>
   <div id="empty-state"></div>
 </main>
 
-<footer>MiniLM Embeddings · FAISS · BGE Reranker</footer>
+<footer>MiniLM Embeddings · FAISS · BGE Reranker · Orador de Debates</footer>
 <script type="module" src="/static/main.js"></script>
 </body>
 </html>
