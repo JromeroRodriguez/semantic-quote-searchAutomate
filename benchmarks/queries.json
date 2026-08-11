@@ -1,0 +1,12 @@
+[
+  {"id": 1, "type": "personal_frustration", "query": "I feel like no matter how hard I try, nothing ever changes."},
+  {"id": 2, "type": "lack_of_motivation", "query": "I have no energy to get out of bed in the morning."},
+  {"id": 3, "type": "feeling_stuck", "query": "I feel like everyone is moving forward while I remain stuck."},
+  {"id": 4, "type": "existential_doubt", "query": "I wonder if the life I built is really the life I wanted."},
+  {"id": 5, "type": "anxiety_future", "query": "I am terrified of what the future holds for me."},
+  {"id": 6, "type": "loneliness", "query": "I am surrounded by people but feel completely alone."},
+  {"id": 7, "type": "failure", "query": "I failed at the one thing I was supposed to be good at."},
+  {"id": 8, "type": "personal_growth", "query": "I am finally learning who I really am."},
+  {"id": 9, "type": "peace_tranquility", "query": "The feeling of peace I get when I watch the rain."},
+  {"id": 10, "type": "reflection", "query": "Sometimes I think about all the choices that brought me here."}
+]
