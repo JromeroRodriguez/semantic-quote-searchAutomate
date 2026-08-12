@@ -137,12 +137,11 @@ footer::before { content: ""; position: absolute; top: 0; left: 1.5rem; right: 1
 
 .progress-fill {
   height: 100%; background: var(--accent);
-  animation: slideProgress 2s ease-in-out infinite;
+  animation: slideProgress 3s ease-in forwards;
 }
 
 @keyframes slideProgress {
   0% { width: 0%; }
-  50% { width: 70%; }
   100% { width: 100%; }
 }
 .essay-box p { margin: 0 0 1.5rem 0; }
