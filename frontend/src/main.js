@@ -10,6 +10,7 @@ const resultsCount = document.getElementById("results-count");
 const debateResultsSection = document.getElementById("debate-results-section");
 const debateEssayContainer = document.getElementById("debate-essay-container");
 const debateSourcesContainer = document.getElementById("debate-sources-container");
+const debateLoadingState = document.getElementById("debate-loading-state");
 
 const noResults = document.getElementById("no-results");
 const errorState = document.getElementById("error-state");
@@ -89,7 +90,7 @@ modeSearchBtn.addEventListener("click", () => setMode("search"));
 modeDebateBtn.addEventListener("click", () => setMode("debate"));
 
 function showState(state) {
-    [loadingState, resultsSection, debateResultsSection, noResults, errorState, emptyState].forEach((el) =>
+    [loadingState, debateLoadingState, resultsSection, debateResultsSection, noResults, errorState, emptyState].forEach((el) =>
         el.classList.add("hidden")
     );
     state.classList.remove("hidden");
@@ -122,8 +123,14 @@ async function handleSubmit() {
     if (!query) return;
 
     searchBtn.disabled = true;
-    searchBtn.textContent = currentMode === "search" ? "Reading…" : "Debating…";
-    showState(loadingState);
+    searchBtn.textContent = currentMode === "search" ? "Reading…" : "Generating…";
+    
+    // Show appropriate loading state based on mode
+    if (currentMode === "search") {
+        showState(loadingState);
+    } else {
+        showState(debateLoadingState);
+    }
 
     try {
         if (currentMode === "search") {
