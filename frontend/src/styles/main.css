@@ -101,10 +101,24 @@ footer::before { content: ""; position: absolute; top: 0; left: 1.5rem; right: 1
 
 .generating-essay {
   text-align: center; padding: 3rem 2rem;
+  display: flex; flex-direction: column; align-items: center;
+  gap: 1.5rem;
+}
+
+.spinner {
+  width: 40px; height: 40px;
+  border: 3px solid var(--line);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }
 
 .generating-essay h2 {
-  font-family: var(--display); font-size: 2rem; font-weight: 400; margin: 0 0 1rem;
+  font-family: var(--display); font-size: 1.5rem; font-weight: 400; margin: 0;
   color: var(--ink); letter-spacing: -0.02em;
 }
 
@@ -126,23 +140,8 @@ footer::before { content: ""; position: absolute; top: 0; left: 1.5rem; right: 1
 }
 
 .generating-text {
-  font-size: 1rem; color: var(--muted); margin: 0 0 2rem;
+  font-size: 1rem; color: var(--muted); margin: 0;
   line-height: 1.5;
-}
-
-.progress-bar {
-  height: 3px; background: var(--line); border-radius: 2px;
-  overflow: hidden; max-width: 400px; margin: 0 auto;
-}
-
-.progress-fill {
-  height: 100%; background: var(--accent);
-  animation: slideProgress 1.2s ease-in forwards;
-}
-
-@keyframes slideProgress {
-  0% { width: 0%; }
-  100% { width: 100%; }
 }
 .essay-box p { margin: 0 0 1.5rem 0; }
 .essay-box p:last-child { margin-bottom: 0; }
