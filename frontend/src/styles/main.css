@@ -137,7 +137,7 @@ footer::before { content: ""; position: absolute; top: 0; left: 1.5rem; right: 1
 
 .progress-fill {
   height: 100%; background: var(--accent);
-  animation: slideProgress 3s ease-in forwards;
+  animation: slideProgress 1.2s ease-in forwards;
 }
 
 @keyframes slideProgress {
