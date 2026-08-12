@@ -2,6 +2,8 @@
 
 Una aplicación web que devuelve las **3 frases semánticamente más relevantes** a partir de una descripción en texto libre de una situación, emoción o pensamiento. El sistema **no depende de coincidencia de palabras clave** — utiliza comprensión semántica profunda a través de embeddings y reranking.
 
+Incluye además un **modo de debate**: ante una pregunta filosófica o compleja, genera un ensayo de dos párrafos **estrictamente fundamentado en las citas recuperadas** del mismo índice.
+
 ## Arquitectura
 
 ```mermaid
@@ -23,7 +25,8 @@ Dos procesos separados:
 
 2. **Búsqueda en Tiempo Real** (atiende peticiones del usuario):
    - FastAPI carga los modelos una sola vez al inicio
-   - Genera embedding de la consulta → Recuperación de candidatos con FAISS → Reranking con BGE → Top 3
+   - Genera embedding de la consulta → Recuperación de candidatos con FAISS → Reranking con Cross-Encoder → Top 3
+   - El **modo debate** reutiliza el mismo pipeline: las Top 3 frases se citan en un ensayo de dos párrafos (`POST /api/v1/debate`)
 
 ## Stack Tecnológico
 
@@ -31,9 +34,10 @@ Dos procesos separados:
 |-----------|-----------|
 | Backend | Python, FastAPI |
 | Scraping | Playwright |
-| Embeddings | `sentence-transformers/paraphrase-multilingual-MiniLM-L-12-v2` |
+| Embeddings | `sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2` |
 | Búsqueda Vectorial | FAISS (IndexFlatIP) |
 | Reranker | `cross-encoder/ms-marco-MiniLM-L-6-v2` |
+| Orador de Debates | Generación dinámica mediante LLM local (Ollama / Qwen / Llama) con fallback a plantillas |
 | Frontend | CSS editorial personalizado, JavaScript vanilla |
 | Dataset | JSON |
 
@@ -63,6 +67,8 @@ python scripts/scrape_quotes.py
 
 Esto crea `data/quotes.json` con todas las frases de [quotes.toscrape.com](https://quotes.toscrape.com/).
 
+> El scraper usa el navegador Google Chrome por defecto (`--channel chrome`). Si no lo tienes instalado, usa el Chromium incluido con Playwright: `python scripts/scrape_quotes.py --channel chromium`.
+
 ### 4. Construir el índice FAISS
 
 ```bash
@@ -84,6 +90,7 @@ Abrir [http://localhost:8000](http://localhost:8000) en el navegador.
 ### Inicio rápido
 
 ```bash
+cp .env.example .env   # docker-compose.yml carga este archivo
 docker compose up --build
 ```
 
@@ -107,7 +114,7 @@ docker compose down      # detener
 
 | Variable | Valor por defecto | Descripción |
 |----------|---------|-------------|
-| `EMBEDDING_MODEL` | `sentence-transformers/paraphrase-multilingual-MiniLM-L-12-v2` | Modelo de embeddings |
+| `EMBEDDING_MODEL` | `sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2` | Modelo de embeddings |
 | `RERANKER_MODEL` | `cross-encoder/ms-marco-MiniLM-L-6-v2` | Modelo reranker |
 | `TOP_K` | `15` | Candidatos recuperados de FAISS |
 | `FINAL_RESULTS` | `3` | Resultados finales devueltos |
@@ -117,6 +124,8 @@ docker compose down      # detener
 | `METADATA_PATH` | `data/metadata.json` | Ruta al mapping de metadatos |
 | `DEVICE` | automático | `cpu` o `cuda` |
 | `MODEL_DTYPE` | `float32` | `float32`, `float16` o `bfloat16` |
+| `OLLAMA_URL` | `http://localhost:11434/api/generate` | URL del servidor local Ollama |
+| `OLLAMA_MODEL` | `qwen2.5:0.5b` | Modelo LLM para generación de ensayos |
 
 ## API
 
@@ -140,6 +149,30 @@ Respuesta:
   ]
 }
 ```
+
+### Debate
+
+```
+POST /api/v1/debate
+Content-Type: application/json
+
+{"query": "¿Es más importante el conocimiento o la imaginación?"}
+```
+
+Respuesta:
+
+```json
+{
+  "success": true,
+  "essay": "Frente al dilema planteado, ...\n\nSin embargo, ...",
+  "sources": [
+    {"id": 1, "quote": "...", "author": "..."},
+    {"id": 2, "quote": "...", "author": "..."}
+  ]
+}
+```
+
+`success` es `false` cuando no se encuentran fuentes; `essay` contiene entonces un mensaje de respaldo.
 
 ### Salud
 
@@ -168,9 +201,12 @@ python scripts/build_index.py -v                   # Logging detallado
 
 ```bash
 python -m pytest tests/ -v                    # Ejecutar todas las pruebas
-python -m pytest tests/test_api.py -v         # Solo pruebas de API
+python -m pytest tests/test_api.py -v         # Solo pruebas de API (búsqueda + debate)
 python -m pytest tests/test_integration.py -v # Solo pruebas de integración
+python -m pytest tests/test_debate.py -v      # Solo pruebas del orador de debates
 ```
+
+Otras suites: `test_dataset.py`, `test_embeddings.py`, `test_faiss.py`, `test_reranker.py`, `test_scraper.py`.
 
 ## Benchmarking
 
@@ -195,34 +231,42 @@ Ejecuta 10 consultas representativas en diferentes categorías emocionales y mid
 ├── backend/
 │   └── app/
 │       ├── main.py              # Punto de entrada FastAPI + lifespan
-│       ├── api/routes/search.py # POST /api/v1/search
+│       ├── api/routes/
+│       │   ├── search.py        # POST /api/v1/search
+│       │   └── debate.py        # POST /api/v1/debate
 │       ├── core/
 │       │   ├── config.py        # Configuración desde .env
 │       │   └── logging.py       # Configuración de logging
 │       ├── models/quote.py      # Modelo de dominio Quote
-│       ├── schemas/search.py    # Schemas de request/response
+│       ├── schemas/
+│       │   ├── search.py        # Schemas de request/response de búsqueda
+│       │   └── debate.py        # Schemas de request/response de debate
 │       ├── services/
 │       │   ├── embeddings/jina_service.py
 │       │   ├── search/faiss_service.py
 │       │   ├── search/semantic_search_service.py
-│       │   └── reranker/bge_service.py
+│       │   ├── reranker/bge_service.py
+│       │   └── debate/debate_service.py
 │       ├── repositories/quote_repository.py
 │       └── utils/text.py        # Normalización de texto compartida
 ├── scripts/
 │   ├── scrape_quotes.py         # Preparación de datos: scraping
 │   └── build_index.py           # Preparación de datos: indexación
 ├── frontend/
-│   ├── index.html               # Interfaz editorial
+│   ├── index.html               # Interfaz editorial (búsqueda + debate)
 │   └── src/
-│       ├── main.js              # Lógica de la aplicación
+│       ├── main.js              # Lógica de la aplicación (modos búsqueda/debate)
 │       ├── services/api.js      # Cliente API
 │       └── styles/main.css      # Estilos editorial
 ├── data/
-│   ├── quotes.json              # Dataset extraído
-│   ├── quotes.index             # Índice FAISS
-│   └── metadata.json            # Mapping frase ↔ índice
+│   ├── quotes.json              # Dataset extraído (versionado)
+│   ├── quotes.index             # Índice FAISS (generado por build_index.py)
+│   └── metadata.json            # Mapping frase ↔ índice (generado por build_index.py)
 ├── tests/                       # Suite de pruebas pytest
-├── benchmarks/                  # Evaluación semántica
+├── benchmarks/
+│   ├── evaluate.py              # Evaluación semántica
+│   └── queries.json             # Consultas de referencia
+├── start.sh                     # Inicio rápido con Docker
 ├── requirements.txt
 ├── requirements-dev.txt
 ├── Dockerfile

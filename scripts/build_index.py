@@ -25,7 +25,6 @@ if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
 import faiss
-import numpy as np
 
 from backend.app.core.config import get_settings
 from backend.app.services.embeddings.jina_service import EmbeddingService

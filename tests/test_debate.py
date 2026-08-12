@@ -5,7 +5,7 @@ from __future__ import annotations
 import pytest
 from fastapi.testclient import TestClient
 
-from backend.app.services.debate.debate_service import DebateService, FALLBACK_MESSAGE
+from backend.app.services.debate.debate_service import FALLBACK_MESSAGE, DebateService
 
 
 class DummySearchServiceSuccess:
@@ -13,13 +13,13 @@ class DummySearchServiceSuccess:
         return [
             {
                 "quote_id": 1,
-                "quote": "La imaginación es más importante que el conocimiento.",
+                "quote": "Imagination is more important than knowledge.",
                 "author": "Albert Einstein",
             },
             {
                 "quote_id": 2,
-                "quote": "La imaginación nos lleva a mundos que nunca existieron.",
-                "author": "Carl Sagan",
+                "quote": "Imagination is the beginning of creation.",
+                "author": "George Bernard Shaw",
             },
         ]
 
@@ -32,11 +32,11 @@ class DummySearchServiceEmpty:
 def test_debate_service_success():
     search_service = DummySearchServiceSuccess()
     service = DebateService(search_service=search_service)
-    result = service.debate("¿Es más importante el conocimiento o la imaginación?")
+    result = service.debate("Is knowledge more important than imagination?")
 
     assert result["success"] is True
     assert "Albert Einstein" in result["essay"]
-    assert "Carl Sagan" in result["essay"]
+    assert "George Bernard Shaw" in result["essay"]
     assert len(result["sources"]) == 2
     assert result["sources"][0]["author"] == "Albert Einstein"
 
@@ -44,7 +44,7 @@ def test_debate_service_success():
 def test_debate_service_fallback():
     search_service = DummySearchServiceEmpty()
     service = DebateService(search_service=search_service)
-    result = service.debate("Pregunta sin referencias posibles en el dataset.")
+    result = service.debate("Question with no possible references in dataset.")
 
     assert result["success"] is False
     assert result["essay"] == FALLBACK_MESSAGE

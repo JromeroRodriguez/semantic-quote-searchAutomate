@@ -37,6 +37,10 @@ class Settings(BaseSettings):
     device: str | None = None  # None -> auto (CPU when no GPU present)
     model_dtype: str = "float32"  # float32 | float16 | bfloat16
 
+    # Ollama LLM integration
+    ollama_url: str = "http://localhost:11434/api/generate"
+    ollama_model: str = "llama3.2"
+
     @property
     def data_dir(self) -> Path:
         return self.quotes_path.parent

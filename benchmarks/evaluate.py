@@ -19,7 +19,9 @@ def run_benchmark():
     from backend.app.services.embeddings.jina_service import EmbeddingService
     from backend.app.services.reranker.bge_service import BGERerankerService
     from backend.app.services.search.faiss_service import FAISSService
-    from backend.app.services.search.semantic_search_service import SemanticSearchService
+    from backend.app.services.search.semantic_search_service import (
+        SemanticSearchService,
+    )
 
     setup_logging()
     settings = get_settings()

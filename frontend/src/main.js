@@ -27,17 +27,17 @@ const actionHint = document.getElementById("action-hint");
 let currentMode = "search"; // "search" or "debate"
 
 const SEARCH_SUGGESTIONS = [
-    "empezar de nuevo tras un fracaso",
-    "la calma antes de una gran decisión",
-    "amar a alguien desde la distancia",
-    "por qué la paciencia no es pasividad",
+    "starting over after failure",
+    "the calm before a major decision",
+    "loving someone from a distance",
+    "why patience is not passivity",
 ];
 
 const DEBATE_SUGGESTIONS = [
-    "¿Es más importante el conocimiento o la imaginación?",
-    "¿Puede existir la justicia sin misericordia?",
-    "¿Cuál es el verdadero propósito del sufrimiento?",
-    "¿Requiere la libertad independencia absoluta?",
+    "Is knowledge more important than imagination?",
+    "Can justice exist without mercy?",
+    "What is the true purpose of suffering?",
+    "Does freedom require absolute independence?",
 ];
 
 function renderSuggestions() {
@@ -67,19 +67,19 @@ function setMode(mode) {
         modeDebateBtn.classList.remove("active");
         heroSearch.classList.remove("hidden");
         heroDebate.classList.add("hidden");
-        inputLabel.textContent = "Tu descripción";
-        queryInput.placeholder = "Sigo dudando de una decisión que ya tomé…";
-        searchBtn.textContent = "Buscar citas";
-        actionHint.textContent = "Pulsa ⌘ / Ctrl + Enter para buscar";
+        inputLabel.textContent = "Your description";
+        queryInput.placeholder = "I am still doubting a decision I already made…";
+        searchBtn.textContent = "Search quotes";
+        actionHint.textContent = "Press ⌘ / Ctrl + Enter to search";
     } else {
         modeDebateBtn.classList.add("active");
         modeSearchBtn.classList.remove("active");
         heroDebate.classList.remove("hidden");
         heroSearch.classList.add("hidden");
-        inputLabel.textContent = "Pregunta filosófica";
-        queryInput.placeholder = "¿Es más importante el conocimiento o la imaginación?";
-        searchBtn.textContent = "Debatir";
-        actionHint.textContent = "Pulsa ⌘ / Ctrl + Enter para debatir";
+        inputLabel.textContent = "Philosophical question";
+        queryInput.placeholder = "Is knowledge more important than imagination?";
+        searchBtn.textContent = "Debate";
+        actionHint.textContent = "Press ⌘ / Ctrl + Enter to debate";
     }
     renderSuggestions();
     syncButton();
@@ -122,7 +122,7 @@ async function handleSubmit() {
     if (!query) return;
 
     searchBtn.disabled = true;
-    searchBtn.textContent = currentMode === "search" ? "Leyendo…" : "Debatiendo…";
+    searchBtn.textContent = currentMode === "search" ? "Reading…" : "Debating…";
     showState(loadingState);
 
     try {
@@ -135,7 +135,7 @@ async function handleSubmit() {
                 return;
             }
 
-            resultsCount.textContent = `${results.length} pasajes`;
+            resultsCount.textContent = `${results.length} passages`;
             resultsContainer.innerHTML = results.map(renderQuoteCard).join("");
             showState(resultsSection);
         } else {
@@ -149,10 +149,10 @@ async function handleSubmit() {
             showState(debateResultsSection);
         }
     } catch (err) {
-        errorMessage.textContent = err.message || "Algo salió mal. Por favor, inténtalo de nuevo.";
+        errorMessage.textContent = err.message || "Something went wrong. Please try again.";
         showState(errorState);
     } finally {
-        searchBtn.textContent = currentMode === "search" ? "Buscar citas" : "Debatir";
+        searchBtn.textContent = currentMode === "search" ? "Search quotes" : "Debate";
         syncButton();
     }
 }

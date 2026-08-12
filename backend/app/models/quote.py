@@ -16,5 +16,5 @@ class Quote(BaseModel):
     source: str | None = None
 
     @classmethod
-    def from_dict(cls, data: dict[str, Any]) -> "Quote":
+    def from_dict(cls, data: dict[str, Any]) -> Quote:
         return cls.model_validate(data)
