@@ -13,6 +13,7 @@
   <nav class="mode-nav">
     <button id="mode-search-btn" class="mode-tab active">Search</button>
     <button id="mode-debate-btn" class="mode-tab">Debate Speaker</button>
+    <button id="mode-optimizer-btn" class="mode-tab">Budget Optimizer</button>
   </nav>
 </header>
 
@@ -27,6 +28,12 @@
     <p class="eyebrow accent">Backed Argumentation</p>
     <h1>Debate the complex, <em>backed by quotes.</em></h1>
     <p class="lede">Ask a philosophical or complex question. The speaker synthesizes a two-paragraph essay strictly grounded in database quotes.</p>
+  </section>
+
+  <section class="hero rule hidden" id="hero-optimizer">
+    <p class="eyebrow accent">Token Budget Optimization</p>
+    <h1>Maximize content, <em>respect the limit.</em></h1>
+    <p class="lede">Pack quotes into optimal batches before sending to the LLM. Never exceed the configured token budget.</p>
   </section>
 
   <section class="panel">
@@ -64,12 +71,36 @@
     <ol id="debate-sources-container"></ol>
   </section>
 
+  <section id="optimizer-panel" class="hidden">
+    <label class="eyebrow muted" for="optimizer-input">Maximum tokens per batch</label>
+    <div class="panel-foot" style="justify-content: flex-start; gap: 1rem;">
+      <input id="optimizer-input" type="number" value="1000" min="100" step="100"
+             style="padding: 0.6rem 1rem; font-size: 1rem; border: 1px solid var(--line); border-radius: 4px; width: 160px;">
+      <button id="optimizer-run-btn">Run Optimizer</button>
+    </div>
+  </section>
+
+  <section id="optimizer-loading-state" class="hidden state rule">
+    <div class="generating-essay">
+      <div class="spinner"></div>
+      <h2>Optimizing batches<span class="dots"><span>.</span><span>.</span><span>.</span></span></h2>
+      <p class="generating-text">Tokenizing quotes and packing into optimal batches</p>
+    </div>
+  </section>
+
+  <section id="optimizer-results-section" class="hidden">
+    <p class="eyebrow muted">Usage Receipt</p>
+    <div class="optimizer-receipt" id="optimizer-receipt"></div>
+    <p class="eyebrow muted" style="margin-top: 2rem;">Generated Batches</p>
+    <div id="optimizer-batches-container"></div>
+  </section>
+
   <p id="no-results" class="hidden state rule serif-note">No passage came close enough. Try describing it differently.</p>
   <p id="error-state" class="hidden state rule serif-note error"><span id="error-message"></span></p>
   <div id="empty-state"></div>
 </main>
 
-<footer>MiniLM Embeddings · FAISS · Cross-Encoder · Debate Speaker</footer>
+<footer>MiniLM Embeddings · FAISS · Cross-Encoder · Debate Speaker · Budget Optimizer</footer>
 <script type="module" src="/static/main.js"></script>
 </body>
 </html>
