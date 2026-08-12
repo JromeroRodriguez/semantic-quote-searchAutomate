@@ -275,10 +275,3 @@ Ejecuta 10 consultas representativas en diferentes categorías emocionales y mid
 └── README.md
 ```
 
-## Limitaciones Conocidas
-
-- **Inferencia solo en CPU**: La latencia promedio de búsqueda es ~5s en CPU. Con GPU se reduciría a <1s.
-- **Recuperación multilingüe**: MiniLM soporta español nativamente. Los resultados son consistentes para consultas en español.
-- **Tamaño del dataset**: 100 frases de quotes.toscrape.com. La arquitectura escala a datasets más grandes sin cambios.
-- **Sin panel de administración**: Las actualizaciones del dataset requieren ejecutar los scripts manualmente.
-
