@@ -1,38 +1,32 @@
-"""Token counting using the Qwen2.5 tokenizer via Hugging Face transformers.
-
-Provides accurate token counting compatible with the local Ollama model.
-Isolated behind a clean interface so it can be replaced without affecting batching logic.
-"""
+"""Token counting using OpenAI's tiktoken library."""
 
 from __future__ import annotations
 
 import logging
 from functools import lru_cache
 
-logger = logging.getLogger(__name__)
+import tiktoken
 
-QWEN_MODEL_NAME = "Qwen/Qwen2.5-0.5B"
+logger = logging.getLogger(__name__)
 
 
 @lru_cache(maxsize=1)
 def _load_tokenizer():
-    from transformers import AutoTokenizer
-
-    logger.info("loading tokenizer %s", QWEN_MODEL_NAME)
-    tokenizer = AutoTokenizer.from_pretrained(QWEN_MODEL_NAME)
-    logger.info("tokenizer ready")
-    return tokenizer
+    logger.info("loading OpenAI tiktoken encoder (cl100k_base)")
+    encoding = tiktoken.get_encoding("cl100k_base")
+    logger.info("OpenAI tokenizer ready")
+    return encoding
 
 
 class Tokenizer:
-    """Counts tokens using the Qwen2.5 tokenizer."""
+    """Counts tokens using OpenAI's tiktoken."""
 
     def count(self, text: str) -> int:
         """Return the number of tokens in the given text."""
         if not text:
             return 0
-        tokenizer = _load_tokenizer()
-        return len(tokenizer.encode(text))
+        encoding = _load_tokenizer()
+        return len(encoding.encode(text))
 
     def count_batch(self, texts: list[str]) -> list[int]:
         """Return token counts for a list of texts."""

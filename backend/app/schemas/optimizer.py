@@ -9,25 +9,24 @@ class OptimizerRequest(BaseModel):
     max_tokens: int = Field(gt=0, description="Maximum token budget per batch")
 
 
+class QuoteSummary(BaseModel):
+    id: int
+    quote: str
+    author: str
+
+
 class BatchResult(BaseModel):
     batch_id: int
     quote_ids: list[int]
+    quotes: list[QuoteSummary] = []
     quote_count: int
     estimated_input_tokens: int
-    actual_input_tokens: int | None = None
-    actual_output_tokens: int | None = None
-    total_tokens: int | None = None
 
 
 class UsageReceipt(BaseModel):
     quotes_processed: int
     batches_created: int
-    requests_completed: int
-    requests_failed: int
     estimated_input_tokens: int
-    actual_input_tokens: int
-    actual_output_tokens: int
-    total_tokens: int
     token_limit_per_request: int
 
 

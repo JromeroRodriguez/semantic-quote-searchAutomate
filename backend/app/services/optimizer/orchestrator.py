@@ -1,8 +1,4 @@
-"""Orchestrates the complete budget optimizer workflow.
-
- Pure algorithmic feature: loads quotes, validates, batches using actual
- prompt tokenization, and returns a usage receipt. No LLM calls.
-"""
+"""Orchestrates the complete budget optimizer workflow (pure Python)."""
 
 from __future__ import annotations
 
@@ -59,9 +55,11 @@ def run_optimizer(
     quotes_path: Path,
     max_tokens: int,
 ) -> dict[str, Any]:
-    """Execute the full optimizer pipeline.
+    """Execute the pure Python optimizer pipeline.
 
-    Pure algorithmic batching — no LLM calls.
+    Args:
+        quotes_path: Path to quotes.json
+        max_tokens: Maximum tokens per batch
 
     Returns a dict with:
       - success: bool
@@ -85,7 +83,7 @@ def run_optimizer(
 
     logger.info("validated %d quotes", len(quotes))
 
-    # 3. Create batches using actual tokenization
+    # 3. Create batches using OpenAI tokenizer
     tokenizer = Tokenizer()
     optimizer = BatchOptimizer(
         max_tokens_per_request=max_tokens,
@@ -95,15 +93,16 @@ def run_optimizer(
     batches = optimizer.pack(quotes)
     logger.info("created %d batches for %d quotes (limit=%d)", len(batches), len(quotes), max_tokens)
 
-    # 4. Track usage (estimated only — no LLM)
+    # 4. Track usage (pure Python estimation)
     tracker = UsageTracker(token_limit_per_request=max_tokens)
 
     for batch in batches:
+        batch_quotes_data = [{"id": q.id, "quote": q.quote, "author": q.author} for q in batch.quotes]
         tracker.record_batch(
             batch_id=batch.batch_id,
             quote_ids=batch.quote_ids,
             estimated_input_tokens=batch.prompt_tokens,
-            skipped=True,
+            quotes=batch_quotes_data,
         )
 
     receipt = tracker.get_receipt()
@@ -114,23 +113,16 @@ def run_optimizer(
         "receipt": {
             "quotes_processed": receipt.quotes_processed,
             "batches_created": receipt.batches_created,
-            "requests_completed": receipt.requests_completed,
-            "requests_failed": receipt.requests_failed,
             "estimated_input_tokens": receipt.estimated_input_tokens,
-            "actual_input_tokens": receipt.actual_input_tokens,
-            "actual_output_tokens": receipt.actual_output_tokens,
-            "total_tokens": receipt.total_tokens,
             "token_limit_per_request": receipt.token_limit_per_request,
         },
         "batches": [
             {
                 "batch_id": bu.batch_id,
                 "quote_ids": bu.quote_ids,
+                "quotes": bu.quotes,
                 "quote_count": bu.quote_count,
                 "estimated_input_tokens": bu.estimated_input_tokens,
-                "actual_input_tokens": bu.actual_input_tokens,
-                "actual_output_tokens": bu.actual_output_tokens,
-                "total_tokens": bu.total_tokens,
             }
             for bu in batch_usages
         ],
@@ -143,12 +135,7 @@ def _empty_result(max_tokens: int) -> dict[str, Any]:
         "receipt": {
             "quotes_processed": 0,
             "batches_created": 0,
-            "requests_completed": 0,
-            "requests_failed": 0,
             "estimated_input_tokens": 0,
-            "actual_input_tokens": 0,
-            "actual_output_tokens": 0,
-            "total_tokens": 0,
             "token_limit_per_request": max_tokens,
         },
         "batches": [],

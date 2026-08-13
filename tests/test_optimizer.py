@@ -81,9 +81,7 @@ def test_optimizer_receipt_fields(client):
     assert response.status_code == 200
     receipt = response.json()["receipt"]
     required = [
-        "quotes_processed", "batches_created", "requests_completed",
-        "requests_failed", "estimated_input_tokens", "actual_input_tokens",
-        "actual_output_tokens", "total_tokens", "token_limit_per_request",
+        "quotes_processed", "batches_created", "estimated_input_tokens", "token_limit_per_request",
     ]
     for field in required:
         assert field in receipt, f"missing field: {field}"

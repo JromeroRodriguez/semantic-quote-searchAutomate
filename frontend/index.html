@@ -89,9 +89,23 @@
   </section>
 
   <section id="optimizer-results-section" class="hidden">
-    <p class="eyebrow muted">Usage Receipt</p>
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+      <p class="eyebrow muted" style="margin: 0;">Usage Receipt</p>
+      <button id="export-json-btn" style="background: transparent; border: 1px solid var(--line); color: var(--muted); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.15em; padding: 0.3rem 0.6rem; cursor: pointer; transition: all 0.2s;">Export Receipt JSON</button>
+    </div>
     <div class="optimizer-receipt" id="optimizer-receipt"></div>
-    <p class="eyebrow muted" style="margin-top: 2rem;">Generated Batches</p>
+    <div class="optimizer-metrics" id="optimizer-metrics"></div>
+    <div class="optimizer-chart hidden" id="optimizer-chart"></div>
+    <div class="optimizer-tools">
+      <input id="optimizer-filter-input" type="text" placeholder="Filter quotes by text or author…">
+      <button id="optimizer-expand-all-btn" type="button" class="opt-tool-btn">Expand all</button>
+      <button id="optimizer-collapse-all-btn" type="button" class="opt-tool-btn">Collapse all</button>
+    </div>
+    <div class="compare-bar">
+      <button id="optimizer-compare-btn" type="button" class="opt-tool-btn">Compare budgets (500 / 1000 / 2000)</button>
+    </div>
+    <div id="optimizer-compare-container"></div>
+    <p class="eyebrow muted" style="margin-top: 2rem;">Generated Batches (Click to inspect quotes)</p>
     <div id="optimizer-batches-container"></div>
   </section>
 
@@ -101,6 +115,6 @@
 </main>
 
 <footer>MiniLM Embeddings · FAISS · Cross-Encoder · Debate Speaker · Budget Optimizer</footer>
-<script type="module" src="/static/main.js"></script>
+<script type="module" src="/static/main.js?v=3"></script>
 </body>
 </html>

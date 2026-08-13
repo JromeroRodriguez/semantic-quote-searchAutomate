@@ -41,13 +41,6 @@ class Settings(BaseSettings):
     ollama_url: str = "http://localhost:11434/api/generate"
     ollama_model: str = "llama3.2"
 
-    # Budget optimizer
-    optimizer_max_tokens: int = 1000
-
-    @property
-    def data_dir(self) -> Path:
-        return self.quotes_path.parent
-
 
 @lru_cache
 def get_settings() -> Settings:
