@@ -1,7 +1,6 @@
 """Playwright-based scraper for quotes.toscrape.com.
 
-Refactored from the prototype notebook (main.ipynb). This is a data
-preparation process and is never executed during a user search.
+This is a data preparation process and is never executed during a user search.
 
 Output: data/quotes.json
 """

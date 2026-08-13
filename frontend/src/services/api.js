@@ -39,3 +39,23 @@ export async function debateQuotes(query) {
 
     return response.json();
 }
+
+/**
+ * Run the budget optimizer.
+ * @param {number} maxTokens - Maximum token budget per batch.
+ * @returns {Promise<{success: boolean, receipt: object, batches: Array<object>}>}
+ */
+export async function runOptimizer(maxTokens) {
+    const response = await fetch(`${API_BASE}/optimizer/run`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ max_tokens: maxTokens }),
+    });
+
+    if (!response.ok) {
+        const error = await response.json().catch(() => ({ detail: "Optimizer failed" }));
+        throw new Error(error.detail || `HTTP ${response.status}`);
+    }
+
+    return response.json();
+}

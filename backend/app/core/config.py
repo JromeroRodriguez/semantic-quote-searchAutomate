@@ -41,10 +41,6 @@ class Settings(BaseSettings):
     ollama_url: str = "http://localhost:11434/api/generate"
     ollama_model: str = "llama3.2"
 
-    @property
-    def data_dir(self) -> Path:
-        return self.quotes_path.parent
-
 
 @lru_cache
 def get_settings() -> Settings:

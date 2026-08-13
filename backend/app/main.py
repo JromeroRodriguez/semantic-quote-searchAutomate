@@ -16,6 +16,7 @@ from fastapi.staticfiles import StaticFiles
 FRONTEND_DIR = Path(__file__).resolve().parents[2] / "frontend"
 
 from backend.app.api.routes.debate import router as debate_router
+from backend.app.api.routes.optimizer import router as optimizer_router
 from backend.app.api.routes.search import router as search_router
 from backend.app.core.config import get_settings
 from backend.app.core.logging import setup_logging
@@ -94,6 +95,7 @@ app = FastAPI(
 
 app.include_router(search_router, prefix="/api/v1")
 app.include_router(debate_router, prefix="/api/v1")
+app.include_router(optimizer_router, prefix="/api/v1")
 
 # Mount static assets (JS, CSS)
 app.mount("/static", StaticFiles(directory=str(FRONTEND_DIR / "src")), name="static")

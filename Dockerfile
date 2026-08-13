@@ -22,6 +22,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 # ---- Python dependencies (cached layer) ----
+# Install CPU-only PyTorch first (the default wheel bundles ~3.5GB of
+# CUDA/nvidia libraries that this CPU-only app never uses).
+RUN pip install --no-cache-dir torch --index-url https://download.pytorch.org/whl/cpu
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
@@ -29,7 +32,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY backend/ backend/
 COPY scripts/ scripts/
 COPY frontend/ frontend/
-COPY benchmarks/ benchmarks/
 COPY .env.example .
 
 # ---- Pre-built data (generate locally BEFORE docker build) ----
